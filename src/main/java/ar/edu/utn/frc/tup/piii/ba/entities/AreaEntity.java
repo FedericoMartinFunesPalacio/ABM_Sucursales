@@ -6,22 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "areas")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Table(name = "dummy")
-public class DummyEntity {
+@Table(name = "areas")
+public class AreaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username",nullable = false)
-    private String userName;
+    @Column(name = "descripcion",nullable = false)
+    private String descripcion;
 
-    @Column(name = "email",nullable = false)
-    private String email;
+    //@Column(name = "tareas",nullable = false) //HACEMOS UNA RELACION CON TAREAS?
+    //private String tareas;
 }
