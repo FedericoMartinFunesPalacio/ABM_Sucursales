@@ -4,59 +4,22 @@ import ar.edu.utn.frc.tup.piii.ba.dtos.AreaDto;
 import ar.edu.utn.frc.tup.piii.ba.dtos.SucursalDto;
 import ar.edu.utn.frc.tup.piii.ba.entities.AreaEntity;
 import ar.edu.utn.frc.tup.piii.ba.entities.SucursalEntity;
+import ar.edu.utn.frc.tup.piii.ba.mapers.SucursalMapper;
 import ar.edu.utn.frc.tup.piii.ba.repositories.SucursalRepository;
 import ar.edu.utn.frc.tup.piii.ba.services.SucursalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SucursalServiceImpl implements SucursalService {
 
-    @Autowired
-    private SucursalRepository sucursalRepository;
-
-    private SucursalDto EntityToDto(SucursalEntity entity) {
-        SucursalDto dto = new SucursalDto();
-        dto.setDescripcion(entity.getDescripcion());
-        dto.setResponsableSucursal(entity.getResponsableSucursal());
-        dto.setUbicacion(entity.getUbicacion());
-        dto.setCorreo(entity.getCorreo());
-        dto.setTelefono(entity.getTelefono());
-        dto.setActivo(entity.getActivo());
-        //LOGICA DE AREAS
-        List<AreaEntity> listaAreaEntity = entity.getAreas();
-        List<AreaDto> listaAreaDto = new ArrayList<>();
-        for (AreaEntity area : listaAreaEntity) {
-            AreaDto areaDto = new AreaDto();
-            areaDto.setDescripcion(area.getDescripcion());
-            listaAreaDto.add(areaDto);
-        }
-        dto.setAreas(listaAreaDto);
-        return dto;
-    }
-
-    private SucursalEntity DtoToEntity(SucursalDto dto) {
-        SucursalEntity entity = new SucursalEntity();
-        entity.setDescripcion(dto.getDescripcion());
-        entity.setResponsableSucursal(dto.getResponsableSucursal());
-        entity.setUbicacion(dto.getUbicacion());
-        entity.setCorreo(dto.getCorreo());
-        entity.setTelefono(dto.getTelefono());
-        entity.setActivo(dto.getActivo());
-        //LOGICA DE AREAS
-        List<AreaDto> listaAreaDto = dto.getAreas();
-        List<AreaEntity> listaAreaEntity = new ArrayList<>();
-        for (AreaDto areaDto : listaAreaDto) {
-            AreaEntity areaEntity = new AreaEntity();
-            areaEntity.setDescripcion(areaDto.getDescripcion());
-            listaAreaEntity.add(areaEntity);
-        }
-        entity.setAreas(listaAreaEntity);
-        return entity;
-    }
+    private final SucursalRepository sucursalRepository;
 
     private Boolean Validate(SucursalDto dto) {
         if(dto.getDescripcion() == null || dto.getDescripcion().isBlank()) return false;
@@ -76,23 +39,15 @@ public class SucursalServiceImpl implements SucursalService {
 
     @Override
     public List<SucursalDto> getSucursales() {
-        List<SucursalDto> listaSucursales = new ArrayList<>();
-        List<SucursalEntity> listaEntities = sucursalRepository.findAll();
-        for (SucursalEntity sucursal : listaEntities) {
-            if(sucursal.getActivo()){ //LOGICA DE BORRADO LÓGICO
-                SucursalDto sucursalDto = EntityToDto(sucursal);
-                listaSucursales.add(sucursalDto);
-            }
-        }
-        return listaSucursales;
+        return sucursalRepository.findAll().stream()
+                .map(SucursalMapper::toSucursalDto).toList();
     }
 
     @Override
     public SucursalDto getSucursalByID(Long sucursal_id) {
         SucursalEntity entity = sucursalRepository.findById(sucursal_id).orElse(null);
         if (entity != null && entity.getActivo()) { //LOGICA DE BORRADO LÓGICO
-            SucursalDto sucursalDto = EntityToDto(entity);
-            return sucursalDto;
+            return SucursalMapper.toSucursalDto(entity);
         }
         return null; //ERROR de no encontrado
     }
@@ -100,7 +55,7 @@ public class SucursalServiceImpl implements SucursalService {
     @Override
     public SucursalDto createSucursal(SucursalDto sucursalDto) {
         if(Validate(sucursalDto)){
-            SucursalEntity entity = DtoToEntity(sucursalDto);
+            SucursalEntity entity = SucursalMapper.toSucursalEntity(sucursalDto);
             SucursalEntity sucursalGuardada = sucursalRepository.save(entity);
             return getSucursalByID(sucursalGuardada.getId());
         }
@@ -112,7 +67,7 @@ public class SucursalServiceImpl implements SucursalService {
         if(Validate(sucursalDto)){
             SucursalEntity entity = sucursalRepository.findById(id).orElse(null);
             if (entity != null && entity.getActivo()) {
-                entity = DtoToEntity(sucursalDto);
+                entity = SucursalMapper.toSucursalEntity(sucursalDto);
                 SucursalEntity sucursalGuardada = sucursalRepository.save(entity);
                 return getSucursalByID(sucursalGuardada.getId());
             }

@@ -2,18 +2,22 @@ package ar.edu.utn.frc.tup.piii.ba.services.impl;
 
 import ar.edu.utn.frc.tup.piii.ba.dtos.AreaDto;
 import ar.edu.utn.frc.tup.piii.ba.entities.AreaEntity;
+import ar.edu.utn.frc.tup.piii.ba.mapers.AreaMapper;
 import ar.edu.utn.frc.tup.piii.ba.repositories.AreaRepository;
 import ar.edu.utn.frc.tup.piii.ba.services.AreaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AreaServiceImpl implements AreaService {
-    @Autowired
-    private AreaRepository areaRepository;
+
+    private final AreaRepository areaRepository;
 
     @Override
     public AreaDto createArea(AreaDto areaDto) {
@@ -25,21 +29,13 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public AreaDto getAreaById(Long area_id) {
-        AreaEntity entity = areaRepository.findById(area_id).orElse(null);
-        if (entity != null) {
-            return new AreaDto(entity.getDescripcion());
-        }
-        return null;
+        return areaRepository.findById(area_id)
+                .map(AreaMapper::toAreaDto).orElse(null);
     }
 
     @Override
     public List<AreaDto> getAllAreas() {
-        List<AreaDto> listaAreas = new ArrayList<AreaDto>();
-        List <AreaEntity> entities = areaRepository.findAll();
-        for (AreaEntity entity : entities) {
-            AreaDto dto = new AreaDto(entity.getDescripcion());
-            listaAreas.add(dto);
-        }
-        return listaAreas;
+        return areaRepository.findAll()
+                .stream().map(AreaMapper::toAreaDto).collect(Collectors.toList());
     }
 }

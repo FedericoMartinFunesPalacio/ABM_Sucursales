@@ -1,10 +1,7 @@
 package ar.edu.utn.frc.tup.piii.ba.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 
 @Table(name = "sucursales") //VERIFICAR LOS ATRIBUTOS DE LA ENTIDAD
 public class SucursalEntity {

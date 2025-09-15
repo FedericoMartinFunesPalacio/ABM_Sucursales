@@ -1,16 +1,14 @@
 package ar.edu.utn.frc.tup.piii.ba.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity(name = "areas")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 
 @Table(name = "areas")
 public class AreaEntity {

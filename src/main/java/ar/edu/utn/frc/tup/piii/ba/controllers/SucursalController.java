@@ -2,6 +2,7 @@ package ar.edu.utn.frc.tup.piii.ba.controllers;
 
 import ar.edu.utn.frc.tup.piii.ba.dtos.SucursalDto;
 import ar.edu.utn.frc.tup.piii.ba.services.SucursalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sucursales")
+@RequiredArgsConstructor
 public class SucursalController{
 
-    @Autowired
-    private SucursalService sucursalService;
+    private final SucursalService sucursalService;
 
     @GetMapping("")
     public ResponseEntity<List<SucursalDto>> getSucursales() {
