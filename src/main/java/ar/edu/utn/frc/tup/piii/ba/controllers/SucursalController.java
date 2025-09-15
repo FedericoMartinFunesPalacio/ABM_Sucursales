@@ -36,11 +36,11 @@ public class SucursalController{
 
     @PutMapping("/{id}")
     public ResponseEntity<SucursalDto> updateSucursal(@PathVariable Long id, @RequestBody SucursalDto dto) {
-        SucursalDto dtos = sucursalService.updateSucursal(id,dto);
+        SucursalDto dtos = sucursalService.updateSucursal(id, dto);
         return ResponseEntity.ok(dtos);
     }
 
-    @PutMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSucursal(@PathVariable Long id) {
         sucursalService.deleteSucursal(id);
         return ResponseEntity.ok(null);
